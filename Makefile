@@ -8,7 +8,7 @@ CXXFLAGS:=-O3 -ffastmath -march=native -ggdb3
 TP?=DriverCpp
 
 #the path of ROPTLIB
-ROOTPATH = /home/whuang/Documents/ROPTLIB
+ROOTPATH = /scratch/squinito/Tools/ROPTLIB
 
 # set the path of Julia
 JULIA_DIR:=/home/whuang/Documents/julia
@@ -219,16 +219,16 @@ ROPTLIB:
 
 #make a library
 libropt.so:
-	$(CC) -w -std=c++0x -shared -fPIC -O3 $(MANIFOLDS) $(OTHERS) $(PROBLEMS) $(SOLVERS) $(INCDIRS) -DROPTLIB_WITH_FFTW -llapack -lblas -lfftw3 -lm -o $@
+	$(CC) -w -std=c++0x -shared -fPIC -O3 $(CPPS) $(MANIFOLDS) $(OTHERS) $(PROBLEMS) $(SOLVERS) $(INCDIRS) -DROPTLIB_WITH_FFTW -llapack -lblas -lfftw3 -lm -o $@
 
 JULIA_LIB:=$(JULIA_DIR)/usr/lib
 JULIA_SRC:=$(JULIA_DIR)/src
 JULIA_INC:=$(JULIA_DIR)/usr/include
 CPPFLAGS:=-I$(JULIA_INC) -I$(JULIA_SRC) -I$(JULIA_SRC)/support
 LDFLAGS:=-L$(JULIA_LIB)
-LDLIBS=-ljulia
+#LDLIBS=-ljulia
 export LD_LIBRARY_PATH:=$(JULIA_LIB):$(JULIA_LIB)/julia
 
 # make a shared library, which is used by Julia
 JuliaROPTLIB:
-	$(CC) -O3 -shared -fPIC -std=c++0x $(ROOTPATH)/test/$(TP).cpp $(CPPS) $(INCDIRS) -D$(UPPER_TP) $(CPPFLAGS) $(LDFLAGS) -Wl,-rpath,$(JULIA_LIB) -lm $(LDLIBS) -DJULIA_LIB_DIR=\"$(JULIA_DIR)/lib/julia\" -DROPTLIB_WITH_FFTW -llapack -lblas -lfftw3 -o $(TP).so
+	$(CC) -O3 -shared -fPIC -std=c++0x $(ROOTPATH)/test/$(TP).cpp $(CPPS) $(INCDIRS) -D$(UPPER_TP) $(CPPFLAGS) $(LDFLAGS) -lm $(LDLIBS) -DROPTLIB_WITH_FFTW -llapack -lblas -lfftw3 -o $(TP).so
